@@ -34,11 +34,11 @@ class BacktestAI():
         data.load_ydata(ticker, period, interval)
         data.add_next_earnings(ticker)
 
-        self.data = data.data
+        self.data = data
 
-        return self.data
+        return self.data.data
 
-    def add_indicators(self, message: str):
+    def load_indicators(self, message: str):
 
         indi_methods = [method for method in dir(Indicators) if not method.startswith("__")]
 
@@ -50,7 +50,7 @@ class BacktestAI():
                 f"Each method takes one argument, which is the number of days used for calculation. "
                 f"If the number of days is not specified, use 20 days by default. "
                 f"Return the output in JSON format, structured as follows:\n\n"
-                f'{{"indicator": "corresponding_method", "args": number_of_days}}\n\n'
+                f'[{{"indicator": "corresponding_method", "args": number_of_days}}]\n\n'
                 f"Here is the request:\n{message}"
             )
         )
@@ -58,10 +58,21 @@ class BacktestAI():
         cleaned_json = re.sub(r"```(json)?\n|\n```", "", response.text).strip()
         cleaned_json = json.loads(cleaned_json)
 
-        return cleaned_json
+        for response in cleaned_json:
+            method_name = response['indicator']
+            method_args = response['args']
+
+            self.data.add_indicator(method_name, method_args)
+
+        return self.data.data
+
+
 
 if __name__ == '__main__':
 
     gemini_api = 'AIzaSyDH_grQD_PxWbrtEHP4qWuWaEH7auCFngw'
 
     bt_ai = BacktestAI(gemini_api)
+
+    bt_ai.load_data("Download Qualcomm data for the past 3 years on a daily interval")
+    bt_ai.load_indicators("Add the rsi of 50 days")
