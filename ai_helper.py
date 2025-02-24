@@ -6,7 +6,8 @@ from indicators import Indicators
 import re
 import json
 
-class BacktestAI():
+
+class BacktestAI:
 
     def __init__(self, api_key):
         self.api_key = api_key
@@ -105,6 +106,6 @@ if __name__ == '__main__':
 
     gemini_api = 'AIzaSyDH_grQD_PxWbrtEHP4qWuWaEH7auCFngw'
 
-    bt_ai = BacktestAI(gemini_api)
-    bt_ai.create_strategy("Simple buy and hold")
-    bt_ai.run_strategy("Download Microsoft data for the past 1 year on a daily interval")
+    backtest_ai = BacktestAI(gemini_api)
+    backtest_ai.create_strategy("Simple buy and hold")
+    backtest_ai.run_strategy("Download Microsoft data for the past 1 year on a daily interval")

@@ -1,9 +1,6 @@
-# Class for indicators
+# Class for defining strategies
 
-import pandas as pd
-
-class Strategy():
-
+class Strategy:
     def __init__(self):
         self.buys = []
         self.sells = []
@@ -23,6 +20,7 @@ class Strategy():
     def remove_sell_signal(self, condition: str):
         self.sells.remove(condition)
         print(f"Removing sell condition {condition}")
+
 
 if __name__ == '__main__':
 

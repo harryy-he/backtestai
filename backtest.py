@@ -3,7 +3,8 @@
 import pandas as pd
 from strategy import Strategy
 
-class Backtest():
+
+class Backtest:
 
     def __init__(self, strategy: Strategy):
         self.strategy = strategy
@@ -23,17 +24,21 @@ class Backtest():
             try:
                 data[condition] = data.eval(condition)
                 added_buys.append(condition)
-            except:
+            except ValueError:
                 print(
                     f"Please check condition '{condition}' - looks like a column is missing.")
+            except Exception as e:
+                print(f"An unexpected error occurred: {e}")
 
         for condition in self.strategy.sells:
             try:
                 data[condition] = data.eval(condition)
                 added_sells.append(condition)
-            except:
+            except ValueError:
                 print(
                     f"Please check condition '{condition}' - looks like a column is missing.")
+            except Exception as e:
+                print(f"An unexpected error occurred: {e}")
 
         # ---
 
@@ -109,19 +114,20 @@ class Backtest():
 
         return final_val, pct_chg
 
+
 if __name__ == '__main__':
 
     from datahelper import DataHelper
 
-    data = DataHelper()
-    data.load_ydata("MSFT", "1y", "1d")
-    data.add_indicator("bollinger_band_upper", 30)
-    data.add_indicator("bollinger_band_lower", 30)
-    data.add_indicator("rsi", 20)
+    data_class = DataHelper()
+    data_class.load_ydata("MSFT", "1y", "1d")
+    data_class.add_indicator("bollinger_band_upper", 30)
+    data_class.add_indicator("bollinger_band_lower", 30)
+    data_class.add_indicator("rsi", 20)
 
-    data.add_next_earnings("MSFT")
+    data_class.add_next_earnings("MSFT")
 
-    df = data.data
+    df_hist = data_class.data
 
     # ---
 
@@ -131,5 +137,4 @@ if __name__ == '__main__':
 
     # ---
 
-    bt = Backtest(my_strategy).run_strategy(df)
-
+    bt = Backtest(my_strategy).run_strategy(df_hist)
