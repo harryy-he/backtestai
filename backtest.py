@@ -103,8 +103,12 @@ class Backtest:
 
         # ---
 
-        # no_trades = self.data["holdig_signal"].diff().fillna(0)
+        data["trade_change"] = data["holding_signal"].diff().fillna(0)
+        num_trades = ((data["trade_change"] == 1) | (data["trade_change"] == -1)).sum()
 
-        print(final_val, pct_chg)
+        if data["holding_signal"].iloc[0] == 1:
+            num_trades += 1
 
-        return final_val, pct_chg
+        print(final_val, pct_chg, num_trades)
+
+        return final_val, pct_chg, num_trades

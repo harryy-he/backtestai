@@ -31,7 +31,7 @@ class BacktestAI:
                 f"There should be two outputs, the first is a JSON format output that details the indicators used, structured as follows:\n\n"
                 f'[{{"indicator": corresponding_method, "args": number_of_days}}]\n\n'
                 "The second output are the conditions that signal when to buy and sell with the condition "
-                "parsed so that I can use the .eval method.  The output should be structured as follows: \n\n"
+                "parsed and ENSURE that I can use the .eval method.  The output should be structured as follows: \n\n"
                 f'[{{signal_type: buy/sell, condition: eval_compliant_string}}]'
                 f"Your response should be only a single json output by aggregating the two outputs together "
                 f"by calling the first output 'indicators' and the second 'signals'. Also, all names are lower case."
