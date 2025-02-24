@@ -8,10 +8,13 @@ from requests import Session
 from requests_cache import CacheMixin, SQLiteCache
 from requests_ratelimiter import LimiterMixin, MemoryQueueBucket
 from pyrate_limiter import Duration, RequestRate, Limiter
-class CachedLimiterSession(CacheMixin, LimiterMixin, Session):
-   pass
 
-class DataHelper():
+
+class CachedLimiterSession(CacheMixin, LimiterMixin, Session):
+    pass
+
+
+class DataHelper:
 
     def __init__(self):
         self.data = None
@@ -31,23 +34,23 @@ class DataHelper():
         )
 
         yf_ticker = yf.Ticker(ticker, session=session)
-        df = yf_ticker.history(period = period, interval = interval)
-        df.columns = df.columns.str.lower()
+        df_hist = yf_ticker.history(period=period, interval=interval)
+        df_hist.columns = df_hist.columns.str.lower()
 
-        self.data = df
+        self.data = df_hist
 
         if self.data.empty:
             print(f"Data from Yahoo Finance could not be downloaded for {ticker}.")
         else:
             print(f"Data from Yahoo Finance downloaded for {ticker}.")
 
-    def load_data(self, df: pd.DataFrame):
+    def load_data(self, df_hist: pd.DataFrame):
         """
         Loads data
-        :param df: Input the dataframe with Datetime Index and OHLC format
+        :param df_hist: Input the dataframe with Datetime Index and OHLC format
         """
-        df.columns = df.columns.str.lower()
-        self.data = df
+        df_hist.columns = df_hist.columns.str.lower()
+        self.data = df_hist
 
         print(f"Success: data loaded.")
 
@@ -58,12 +61,12 @@ class DataHelper():
         """
         url = "https://www.sec.gov/files/company_tickers_exchange.json"
 
-        headers = {"User-Agent": "YourName (your@email.com)", "Accept-Encoding": "gzip, deflate",}
+        headers = {"User-Agent": "YourName (your@email.com)", "Accept-Encoding": "gzip, deflate"}
 
         response = requests.get(url, headers=headers)
 
-        data = response.json()["data"]
-        dict_data = {i[2]: str(i[0]).zfill(10) for i in data}
+        response = response.json()["data"]
+        dict_data = {i[2]: str(i[0]).zfill(10) for i in response}
 
         cik_code = dict_data[ticker]
 
@@ -77,18 +80,18 @@ class DataHelper():
         cik = self.get_cik(ticker)
         url = "https://data.sec.gov/submissions/CIK" + cik + ".json"
 
-        headers = {"User-Agent": "YourName (your@email.com)", "Accept-Encoding": "gzip, deflate","Host": "data.sec.gov"}
+        headers = {"User-Agent": "YourName (your@email.com)", "Accept-Encoding": "gzip, deflate", "Host": "data.sec.gov"}
 
         response = requests.get(url, headers=headers)
 
-        data = response.json()  # Parse JSON response
-        form_types = data["filings"]["recent"]["form"]
-        dates = data["filings"]["recent"]["filingDate"]
+        json_data = response.json()  # Parse JSON response
+        form_types = json_data["filings"]["recent"]["form"]
+        dates = json_data["filings"]["recent"]["filingDate"]
 
-        df = pd.DataFrame({"Date": dates, "Form_Type": form_types})
-        df = df[df["Form_Type"].isin(["10-Q", "10-K"])]
-        df["Date"] = pd.to_datetime(df["Date"])
-        return list(df["Date"])
+        df_dates = pd.DataFrame({"Date": dates, "Form_Type": form_types})
+        df_dates = df_dates[df_dates["Form_Type"].isin(["10-Q", "10-K"])]
+        df_dates["Date"] = pd.to_datetime(df_dates["Date"])
+        return list(df_dates["Date"])
 
     def next_earnings_date(self, date, earnings_dates):
         """
@@ -140,6 +143,7 @@ class DataHelper():
             else:
                 print(f"The indicator method you have chosen is not in the Indicators class, please pass one of the "
                       f"following: {indi_methods}.")
+
 
 if __name__ == '__main__':
     data = DataHelper()

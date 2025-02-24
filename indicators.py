@@ -1,10 +1,11 @@
 # Class for indicators
 
-class Indicators():
+
+class Indicators:
 
     def __init__(self, hist_df):
         """
-        Assumes hist_df has a open, high, low, close and volume columns, and date index column
+        Assumes hist_df has an open, high, low, close and volume columns, and date index column
         """
         self.hist_df = hist_df
 
