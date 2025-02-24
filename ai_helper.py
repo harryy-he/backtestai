@@ -100,12 +100,3 @@ class BacktestAI:
             result = bt_ai.run_strategy(data_class.data)
 
             return result
-
-
-if __name__ == '__main__':
-
-    gemini_api = 'AIzaSyDH_grQD_PxWbrtEHP4qWuWaEH7auCFngw'
-
-    backtest_ai = BacktestAI(gemini_api)
-    backtest_ai.create_strategy("Simple buy and hold")
-    backtest_ai.run_strategy("Download Microsoft data for the past 1 year on a daily interval")

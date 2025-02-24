@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import numpy as np
 import yfinance as yf
+import warnings
 
 from requests import Session
 from requests_cache import CacheMixin, SQLiteCache
@@ -141,17 +142,4 @@ class DataHelper:
                 print(f"The indicator '{indicator_method}' has been added.")
 
             else:
-                print(f"The indicator method you have chosen is not in the Indicators class, please pass one of the "
-                      f"following: {indi_methods}.")
-
-
-if __name__ == '__main__':
-    data = DataHelper()
-    data.load_ydata("MSFT", "1y", "1d")
-    data.add_indicator("rsi", 30)
-    data.add_indicator("bb_upper", 30)
-    data.add_indicator("bb_lower", 30)
-
-    data.add_next_earnings("MSFT")
-
-    df = data.data
+                warnings.warn(f"The indicator method '{indicator_method}' you have chosen is not in the Indicators class, please pass one of the following: {indi_methods}.", UserWarning, stacklevel=1)

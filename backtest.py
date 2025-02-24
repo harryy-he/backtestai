@@ -1,4 +1,5 @@
 # Class for indicators
+import warnings
 
 import pandas as pd
 from strategy import Strategy
@@ -24,21 +25,15 @@ class Backtest:
             try:
                 data[condition] = data.eval(condition)
                 added_buys.append(condition)
-            except ValueError:
-                print(
-                    f"Please check condition '{condition}' - looks like a column is missing.")
             except Exception as e:
-                print(f"An unexpected error occurred: {e}")
+                warnings.warn(f"An unexpected error occurred: {e}", UserWarning, stacklevel=1)
 
         for condition in self.strategy.sells:
             try:
                 data[condition] = data.eval(condition)
                 added_sells.append(condition)
-            except ValueError:
-                print(
-                    f"Please check condition '{condition}' - looks like a column is missing.")
             except Exception as e:
-                print(f"An unexpected error occurred: {e}")
+                warnings.warn(f"An unexpected error occurred: {e}", UserWarning, stacklevel=1)
 
         # ---
 
@@ -113,28 +108,3 @@ class Backtest:
         print(final_val, pct_chg)
 
         return final_val, pct_chg
-
-
-if __name__ == '__main__':
-
-    from datahelper import DataHelper
-
-    data_class = DataHelper()
-    data_class.load_ydata("MSFT", "1y", "1d")
-    data_class.add_indicator("bollinger_band_upper", 30)
-    data_class.add_indicator("bollinger_band_lower", 30)
-    data_class.add_indicator("rsi", 20)
-
-    data_class.add_next_earnings("MSFT")
-
-    df_hist = data_class.data
-
-    # ---
-
-    my_strategy = Strategy()
-    my_strategy.add_buy_signal("rsi <= 40")
-    my_strategy.add_sell_signal("rsi >= 70")
-
-    # ---
-
-    bt = Backtest(my_strategy).run_strategy(df_hist)
