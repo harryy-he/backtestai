@@ -27,6 +27,7 @@ class BacktestAI:
                 f"Each indicator corresponds to one of these methods in my class: {indi_methods}. "
                 f"Each method takes one argument, which is the number of days used for calculation. "
                 f"If the number of days is not specified, use 20 days by default. "
+                f"There is also 'days_to_earnings' that reflects the number of days to the next earnings date."
                 f"There should be two outputs, the first is a JSON format output that details the indicators used, structured as follows:\n\n"
                 f'[{{"indicator": corresponding_method, "args": number_of_days}}]\n\n'
                 "The second output are the conditions that signal when to buy and sell with the condition "

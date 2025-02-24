@@ -132,6 +132,7 @@ class DataHelper:
         :return: Adds the indicator to the data
         """
         indi_methods = [method for method in dir(Indicators) if not method.startswith("__")]
+        indi_methods.append("days_to_earnings")
 
         if self.data is None:
             print("There is no data loaded, please call the 'load_data' method.")
