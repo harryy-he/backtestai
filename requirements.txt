@@ -1,0 +1,11 @@
+streamlit
+pandas
+numpy
+google-genai
+yfinance
+requests
+requests_cache
+requests_ratelimiter
+pyrate_limiter
+plotly
+protobuf
