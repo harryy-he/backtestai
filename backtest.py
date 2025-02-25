@@ -1,6 +1,7 @@
 # Class for indicators
 import warnings
 
+import numpy as np
 import pandas as pd
 from strategy import Strategy
 
@@ -73,42 +74,63 @@ class Backtest:
 
     def run_strategy(self, df: pd.DataFrame):
 
-        data = self.generate_signals(df)
-
         print("Running strategy...")
 
-        # ---
-
-        cash = 100
+        data = self.generate_signals(df)
+        cash = 100  # Initial capital
         start = cash
-
         position = 0
         val = []
+        winrate = []
+        opening_trade_price = None
 
         for i in range(len(data)):
+            close_price = data["close"].iloc[i]
 
+            # Opening position
             if data["holding_signal"].iloc[i] == 1 and cash > 0:
-                position = cash / data["close"].iloc[i]
+                position = cash / close_price
                 cash = 0
+                opening_trade_price = close_price
 
+            # Closing position
             elif data["holding_signal"].iloc[i] == 0 and position > 0:
-                cash = position * data["close"].iloc[i]
+                cash = position * close_price
                 position = 0
+                closing_trade_price = close_price
 
-            val.append(cash + position * data["close"].iloc[i])
+                trade_pct = (closing_trade_price/opening_trade_price) - 1
+                winrate.append(trade_pct)
 
-        final_val = cash + position * data["close"].iloc[-1]
+            # --- Getting value of portfolio
 
+            current_val = cash + (position * data["close"].iloc[i])
+            val.append(current_val)
+
+        if position > 0:  # Selling at end
+            close_price = data["close"].iloc[-1]
+            cash = position * close_price
+            closing_trade_price = close_price
+
+            trade_pct = (closing_trade_price / opening_trade_price) - 1
+            winrate.append(trade_pct)
+
+        # ---- Metrics
+
+        final_val = cash
         pct_chg = (final_val / start) - 1
 
-        # ---
+        # Winrate
+        if len(winrate) > 0:
+            win_rate = sum(x > 0 for x in winrate)/len(winrate)
+        else:
+            win_rate = 0
 
-        data["trade_change"] = data["holding_signal"].diff().fillna(0)
-        num_trades = ((data["trade_change"] == 1) | (data["trade_change"] == -1)).sum()
+        num_trades = len(winrate)
 
-        if data["holding_signal"].iloc[0] == 1:
-            num_trades += 1
+        print(f"Final Value: {final_val:.2f}")
+        print(f"Total Return: {pct_chg * 100:.2f}%")
+        print(f"Win Rate: {win_rate * 100:.2f}%")
+        print(f"Total Trades: {num_trades}")
 
-        print(final_val, pct_chg, num_trades)
-
-        return final_val, pct_chg, num_trades
+        return final_val, pct_chg, num_trades, win_rate, data

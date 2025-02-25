@@ -49,7 +49,7 @@ class Indicators:
         Returns the lower Bollinger Bands of close prices
         """
 
-        multiplier = 2  # TODO: can change the number of standard deviations away
+        multiplier = 2
 
         mid_band = self.hist_df["close"].rolling(n_days).mean()
         std_dev = self.hist_df["close"].rolling(n_days).std()
@@ -63,7 +63,7 @@ class Indicators:
         Returns the upper Bollinger Bands of close prices
         """
 
-        multiplier = 2  # TODO: can change the number of standard deviations away
+        multiplier = 2
 
         mid_band = self.hist_df["close"].rolling(n_days).mean()
         std_dev = self.hist_df["close"].rolling(n_days).std()
