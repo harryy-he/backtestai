@@ -39,7 +39,7 @@ with st.sidebar:
 
 if prompt:
     with st.spinner("Loading..."):
-        bt = BacktestAI('AIzaSyDH_grQD_PxWbrtEHP4qWuWaEH7auCFngw')
+        bt = BacktestAI(llm_key)
         bt.create_strategy(prompt)
         results = bt.run_strategy(f"Download {company_dict[company_select]} for the past {timeframe} on a daily interval.")
 
