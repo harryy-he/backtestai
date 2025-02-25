@@ -78,14 +78,18 @@ if prompt:
             st.metric("Win rate of trades", value=f'{winrate_bah}%')
 
 else:
-
-    st.header("Welcome to BacktestAI")
-    st.write("Get started by selecting your desired company, timeframe, and providing a Google Gemini API key!")
-
     url = "https://ai.google.dev/gemini-api/docs/api-key"
-    st.write("A completely free to use Gemini API Key can be generated [here](%s)." % url)
 
+    st.title("Welcome to BacktestAI")
+    st.write("Get started by selecting your desired company, timeframe, and providing a Google Gemini API key "
+             "(completely free to generate [here](%s)." % url)
     st.write("**Note:** BacktestAI is currently in beta, so you will very likely encounter some bugs.")
+    st.divider()
+    st.subheader("Quick start guide")
+    st.write("Try out the following strategy by copying and pasting it into the chat box input on the left:")
+    st.code("Buy when RSI is below 40 and sell when RSI is above 60.", language=None)
+    st.write("The currently supported indicators are **RSI, MACD, SMA, EMA, Bollinger Bands and OBV**. We also have support "
+             "for trading around earnings (say you want to buy 30 days before earnings dates.)")
     st.divider()
     st.write("**We are looking for contributors and developers! If you are interested "
              "please...**")
