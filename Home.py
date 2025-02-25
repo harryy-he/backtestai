@@ -77,6 +77,11 @@ if prompt:
             st.metric("Number of trades", value=1)
             st.metric("Win rate of trades", value=f'{winrate_bah}%')
 
+            st.divider()
+            url = 'https://discord.gg/YDgu89fA'
+            st.write("**We are looking for contributors and developers! If you are interested "
+                     "please join my Discord [here](%s)** or contact me on Reddit u/Myztika!" %url)
+
 else:
     url = "https://ai.google.dev/gemini-api/docs/api-key"
 
@@ -91,5 +96,6 @@ else:
     st.write("The currently supported indicators are **RSI, MACD, SMA, EMA, Bollinger Bands and OBV**. We also have support "
              "for trading around earnings (say you want to buy 30 days before earnings dates.)")
     st.divider()
+    url = 'https://discord.gg/YDgu89fA'
     st.write("**We are looking for contributors and developers! If you are interested "
-             "please...**")
+             "please join my Discord [here](%s)** or contact me on Reddit u/Myztika!" % url)
