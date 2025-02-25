@@ -77,15 +77,20 @@ class Backtest:
         print("Running strategy...")
 
         data = self.generate_signals(df)
-        cash = 100  # Initial capital
+        cash = 1000  # Initial capital
         start = cash
         position = 0
-        val = []
+        strategy_values = []
         winrate = []
         opening_trade_price = None
 
+        bah_values = []  # Buy and hold values
+        bah_position = cash / data["close"].iloc[0]
+
         for i in range(len(data)):
             close_price = data["close"].iloc[i]
+
+            # Strategy iteration
 
             # Opening position
             if data["holding_signal"].iloc[i] == 1 and cash > 0:
@@ -105,19 +110,28 @@ class Backtest:
             # --- Getting value of portfolio
 
             current_val = cash + (position * data["close"].iloc[i])
-            val.append(current_val)
+            strategy_values.append(current_val)
+
+            # Buy and hold iteration
+            bah_values.append(bah_position * close_price)
 
         if position > 0:  # Selling at end
             close_price = data["close"].iloc[-1]
             cash = position * close_price
-            closing_trade_price = close_price
+            strategy_values.append(cash)
 
+            closing_trade_price = close_price
             trade_pct = (closing_trade_price / opening_trade_price) - 1
             winrate.append(trade_pct)
 
+        # ---- Adding columns
+
+        data["strategy_values"] = strategy_values
+        data["bah_values"] = bah_values
+
         # ---- Metrics
 
-        final_val = cash
+        final_val = strategy_values[-1]
         pct_chg = (final_val / start) - 1
 
         # Winrate
