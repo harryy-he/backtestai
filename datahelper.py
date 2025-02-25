@@ -126,8 +126,9 @@ class DataHelper:
 
         self.data["days_to_earnings"] = (self.data["next_earnings"] - self.data.index).dt.days
 
-    def add_indicator(self, indicator_method: str, *args):
+    def add_indicator(self, indicator_name: str, indicator_method: str, *args):
         """
+        :param indicator_name: The name of the column to be added
         :param indicator_method: The indicator method to add
         :return: Adds the indicator to the data
         """
@@ -139,8 +140,8 @@ class DataHelper:
 
         else:
             if indicator_method in indi_methods:
-                self.data[indicator_method] = getattr(Indicators(self.data), indicator_method)(*args)
-                print(f"The indicator '{indicator_method}' has been added.")
+                self.data[indicator_name] = getattr(Indicators(self.data), indicator_method)(*args)
+                print(f"The indicator '{indicator_name}' has been added.")
 
             else:
                 warnings.warn(f"The indicator method '{indicator_method}' you have chosen is not in the Indicators class, please pass one of the following: {indi_methods}.", UserWarning, stacklevel=1)

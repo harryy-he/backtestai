@@ -71,3 +71,30 @@ class Indicators:
         upper_band = mid_band + (multiplier * std_dev)
 
         return upper_band
+
+    def on_balance_volume(self, *args):
+        """
+        Returns the On-Balance Volume (OBV) of the close prices
+        """
+        obv = [0]  # Start OBV at 0
+
+        for i in range(1, len(self.hist_df)):
+            if self.hist_df["close"].iloc[i] > self.hist_df["close"].iloc[i - 1]:
+                obv.append(obv[-1] + self.hist_df["volume"].iloc[i])
+            elif self.hist_df["close"].iloc[i] < self.hist_df["close"].iloc[i - 1]:
+                obv.append(obv[-1] - self.hist_df["volume"].iloc[i])
+            else:
+                obv.append(obv[-1])  # No change if price is flat
+
+        return obv
+
+    def macd(self, *args):
+        """
+        :return: Returns MACD
+        """
+        short_ema = self.hist_df["close"].ewm(span=12, adjust=False).mean()
+        long_ema = self.hist_df["close"].ewm(span=26, adjust=False).mean()
+
+        macd_line = short_ema - long_ema
+
+        return macd_line

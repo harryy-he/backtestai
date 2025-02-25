@@ -1,9 +1,10 @@
 # Class for indicators
 import warnings
 
-import numpy as np
 import pandas as pd
 from strategy import Strategy
+
+import plotly.express as px
 
 
 class Backtest:
@@ -15,6 +16,7 @@ class Backtest:
 
         data = df.copy()
         data = data.dropna()
+        data["dates"] = data.index
         data = data.reset_index(drop=True)
 
         # ---
@@ -27,14 +29,14 @@ class Backtest:
                 data[condition] = data.eval(condition)
                 added_buys.append(condition)
             except Exception as e:
-                warnings.warn(f"An unexpected error occurred: {e}", UserWarning, stacklevel=1)
+                warnings.warn(f"An unexpected error occurred: {e}", UserWarning, stacklevel=2)
 
         for condition in self.strategy.sells:
             try:
                 data[condition] = data.eval(condition)
                 added_sells.append(condition)
             except Exception as e:
-                warnings.warn(f"An unexpected error occurred: {e}", UserWarning, stacklevel=1)
+                warnings.warn(f"An unexpected error occurred: {e}", UserWarning, stacklevel=2)
 
         # ---
 
@@ -87,7 +89,7 @@ class Backtest:
         bah_values = []  # Buy and hold values
         bah_position = cash / data["close"].iloc[0]
 
-        for i in range(len(data)):
+        for i in range(len(data)-1):
             close_price = data["close"].iloc[i]
 
             # Strategy iteration
@@ -119,10 +121,16 @@ class Backtest:
             close_price = data["close"].iloc[-1]
             cash = position * close_price
             strategy_values.append(cash)
+            bah_values.append(bah_position * close_price)
 
             closing_trade_price = close_price
             trade_pct = (closing_trade_price / opening_trade_price) - 1
             winrate.append(trade_pct)
+
+        else:
+            close_price = data["close"].iloc[-1]
+            strategy_values.append(strategy_values[-1])
+            bah_values.append(bah_position * close_price)
 
         # ---- Adding columns
 
@@ -147,4 +155,16 @@ class Backtest:
         print(f"Win Rate: {win_rate * 100:.2f}%")
         print(f"Total Trades: {num_trades}")
 
-        return final_val, pct_chg, num_trades, win_rate, data
+        # --- Plotting
+        data["strategy_values"] = data["strategy_values"].round(0)
+        data["bah_values"] = data["bah_values"].round(0)
+        data = data.rename(columns={"strategy_values": "Custom Strategy", "bah_values": "Buy and Hold", "dates": "Date"})
+
+        fig = px.line(data, x="dates", y=["Custom Strategy", "Buy and Hold"],
+                      labels={"value": "Portfolio Value",
+                              "variable": "Strategy"},
+                      title="Custom Strategy vs Buy & Hold Performance")
+
+        data = data.rename(columns={"Custom Strategy": "strategy_values", "Buy and Hold": "bah_values", "Date": "dates"})
+
+        return final_val, pct_chg, num_trades, win_rate, data, fig

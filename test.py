@@ -3,7 +3,6 @@ from ai_helper import BacktestAI
 from backtest import Backtest
 from datahelper import DataHelper
 from indicators import Indicators
-import os
 from strategy import Strategy
 
 
@@ -30,7 +29,7 @@ class TestTradingBacktest(unittest.TestCase):
     def test_data_helper(self):
         """Test loading market data and adding indicators"""
         print("Testing DataHelper")
-        self.data.add_indicator("rsi", 30)
+        self.data.add_indicator("rsi_20", "rsi", 20)
         self.assertIn("rsi", self.data.data.columns, "RSI should be in the dataframe")
 
     def test_strategy(self):

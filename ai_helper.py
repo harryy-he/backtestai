@@ -25,13 +25,15 @@ class BacktestAI:
             contents=(
                 f"Please process the following request for stock technical indicators that signal buy and sell signals. "
                 f"Each indicator corresponds to one of these methods in my class: {indi_methods}. "
-                f"Each method takes one argument, which is the number of days used for calculation. "
+                f"Each method, takes one argument which is the number of days used for calculation. "
                 f"If the number of days is not specified, use 20 days by default. "
                 f"There is also 'days_to_earnings' that reflects the number of days to the next earnings date."
                 f"There should be two outputs, the first is a JSON format output that details the indicators used, structured as follows:\n\n"
-                f'[{{"indicator": corresponding_method, "args": number_of_days}}]\n\n'
-                "The second output are the conditions that signal when to buy and sell with the condition "
-                "parsed and ENSURE that I can use the .eval method.  The output should be structured as follows: \n\n"
+                f'[{{"name": name for indicator and arguments, "indicator": corresponding_method, "args": number_of_days}}]\n\n'
+                f"The name of the indicator should reflect the arguments used for it, for example: rsi_20."
+                f"The second output are the conditions that signal when to buy and sell with the condition "
+                f"parsed and ENSURE that I can use the .eval method (it should consider the name of the indicator"
+                f"and arguments as returned in the first output.  The output should be structured as follows: \n\n"
                 f'[{{signal_type: buy/sell, condition: eval_compliant_string}}]'
                 f"Your response should be only a single json output by aggregating the two outputs together "
                 f"by calling the first output 'indicators' and the second 'signals'. Also, all names are lower case."
@@ -88,10 +90,11 @@ class BacktestAI:
             # ---
 
             for indicator in self.indicators:
+                indicator_name = indicator['name']
                 method_name = indicator['indicator']
                 method_args = indicator['args']
 
-                data_class.add_indicator(method_name, method_args)
+                data_class.add_indicator(indicator_name, method_name, method_args)
 
             # ---
 
