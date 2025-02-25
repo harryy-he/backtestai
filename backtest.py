@@ -160,7 +160,7 @@ class Backtest:
         data["bah_values"] = data["bah_values"].round(0)
         data = data.rename(columns={"strategy_values": "Custom Strategy", "bah_values": "Buy and Hold", "dates": "Date"})
 
-        fig = px.line(data, x="dates", y=["Custom Strategy", "Buy and Hold"],
+        fig = px.line(data, x="Date", y=["Custom Strategy", "Buy and Hold"],
                       labels={"value": "Portfolio Value",
                               "variable": "Strategy"},
                       title="Custom Strategy vs Buy & Hold Performance")

@@ -5,7 +5,7 @@ import requests
 import pandas as pd
 
 st.set_page_config(
-    page_title="Welcome",
+    page_title="BacktestAI",
     layout="wide",
 )
 
@@ -57,7 +57,7 @@ if prompt:
         with strategy_col:
             st.write("Strategy Performance")
             st.metric("Final portfolio value", value=f'${final_val:,.0f}')
-            st.metric("Percentage increase (%)", value=f'{(pct_change * 100).round(2)}%')
+            st.metric("Percentage increase (%)", value=f'{(pct_change * 100):.2f}%')
             st.metric("Number of trades", value=num_trades)
             st.metric("Win rate of trades", value=f'{(winrate * 100):.0f}%')
 
@@ -73,6 +73,19 @@ if prompt:
                 winrate_bah = 100
 
             st.metric("Final portfolio value", value=f'${data["bah_values"].iloc[-1]:,.0f}')
-            st.metric("Percentage increase", value=f'{(pct_change_bah * 100).round(2)}%')
+            st.metric("Percentage increase", value=f'{(pct_change_bah * 100):.2f}%')
             st.metric("Number of trades", value=1)
             st.metric("Win rate of trades", value=f'{winrate_bah}%')
+
+else:
+
+    st.header("Welcome to BacktestAI")
+    st.write("Get started by selecting your desired company, timeframe, and providing a Google Gemini API key!")
+
+    url = "https://ai.google.dev/gemini-api/docs/api-key"
+    st.write("A completely free to use Gemini API Key can be generated [here](%s)." % url)
+
+    st.write("**Note:** BacktestAI is currently in beta, so you will very likely encounter some bugs.")
+    st.divider()
+    st.write("**We are looking for contributors and developers! If you are interested "
+             "please...**")
