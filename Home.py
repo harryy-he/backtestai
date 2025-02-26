@@ -85,8 +85,7 @@ else:
     url = "https://ai.google.dev/gemini-api/docs/api-key"
 
     st.title("Welcome to BacktestAI")
-    st.write("Get started by selecting your desired company, timeframe, and providing a Google Gemini API key "
-             "(completely free to generate [here](%s)." % url)
+    st.write("Get started by selecting your desired company and timeframe." % url)
     st.write("**Note:** BacktestAI is currently in beta, so you will very likely encounter some bugs.")
     st.divider()
     st.subheader("Quick start guide")
