@@ -79,7 +79,7 @@ if prompt:
         st.divider()
         url = 'https://discord.gg/YDgu89fA'
         st.write("**We are looking for contributors and developers! If you are interested "
-                 "please join my Discord [here](%s)** or contact me on Reddit u/Myztika!" %url)
+                 "please join my Discord [here](%s)** or contact me on Reddit u/Myztika!" % url)
 
 else:
     url = "https://ai.google.dev/gemini-api/docs/api-key"
