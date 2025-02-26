@@ -28,8 +28,6 @@ with st.sidebar:
     company_select = st.selectbox("Select company to analyse: ", options=company_info["Info"])
     timeframe = st.selectbox("Historical timeframe:", options=["1 year", "2 years", "3 years", "4 years", "5 years"])
 
-    llm_key = st.text_input("Please enter your Google Gemini API key: ")
-
     messages = st.container(height=300)
     if prompt := st.chat_input("What strategy would you like to backtest?"):
         messages.chat_message("user").write(prompt)
@@ -39,7 +37,8 @@ with st.sidebar:
 
 if prompt:
     with st.spinner("Loading..."):
-        bt = BacktestAI(llm_key)
+        gemini_key = st.secrets["gemini_key"]
+        bt = BacktestAI(gemini_key)
         bt.create_strategy(prompt)
         results = bt.run_strategy(f"Download {company_dict[company_select]} for the past {timeframe} on a daily interval.")
 
